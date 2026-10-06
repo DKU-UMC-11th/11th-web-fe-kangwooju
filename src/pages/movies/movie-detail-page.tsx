@@ -1,9 +1,12 @@
 import { Link, useParams } from '@tanstack/react-router'
 import { movies } from '../../data/movies'
+import { useBookmarkStore } from '../../stores/bookmark-store'
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: '/movies/$movieId' })
   const movie = movies.find((item) => item.id === Number(movieId))
+  const isBookmarked = useBookmarkStore((state) => state.bookmarkedMovieIds.includes(Number(movieId)))
+  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark)
 
   if (!movie) {
     return (
@@ -43,8 +46,8 @@ export function MovieDetailPage() {
             <p className="mt-5 text-sm leading-6 text-[#838994]">
               {movie.title}의 공개 정보를 바탕으로 제공되는 영화 소개입니다.
             </p>
-            <button className="mt-6 inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border-0 bg-[#2878f0] px-4 text-sm font-bold text-white" type="button">
-              <img className="size-4 brightness-0 invert" src={movie.isBookmarked ? '/icons/bookmark.svg' : '/icons/bookmark-outline.svg'} alt="" />
+            <button className="mt-6 inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border-0 bg-[#2878f0] px-4 text-sm font-bold text-white" type="button" aria-pressed={isBookmarked} onClick={() => toggleBookmark(movie.id)}>
+              <img className="size-4 brightness-0 invert" src={isBookmarked ? '/icons/bookmark.svg' : '/icons/bookmark-outline.svg'} alt="" />
               즐겨찾기
             </button>
           </div>
