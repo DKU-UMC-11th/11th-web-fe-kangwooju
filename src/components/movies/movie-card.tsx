@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
-import type { Movie } from '../../types/movie'
+import type { MovieCardData } from '../../types/movie'
 import { BookmarkButton } from './bookmark-button'
 
 interface MovieCardProps {
-  movie: Movie
+  movie: MovieCardData
 }
 
 export function MovieCard({ movie }: MovieCardProps) {
@@ -15,11 +15,15 @@ export function MovieCard({ movie }: MovieCardProps) {
           to="/movies/$movieId"
           params={{ movieId: String(movie.id) }}
         >
-          <img
-            className="block h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-            src={movie.posterPath}
-            alt={`${movie.title} 포스터`}
-          />
+          {movie.posterPath ? (
+            <img
+              className="block h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+              src={movie.posterPath}
+              alt={`${movie.title} 포스터`}
+            />
+          ) : (
+            <span className="grid h-full place-items-center text-sm text-[#737982]">이미지 없음</span>
+          )}
         </Link>
         <BookmarkButton
           movieId={movie.id}

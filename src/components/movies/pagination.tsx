@@ -3,12 +3,16 @@ import { cn } from '../../utils/cn'
 interface PaginationProps {
   currentPage: number
   onPageChange: (page: number) => void
+  totalPages: number
 }
 
-const pages = [1, 2, 3, 4, 5]
 const buttonClassName = 'grid size-9 cursor-pointer place-items-center rounded-[7px] border border-transparent bg-transparent text-sm font-semibold text-[#717782] disabled:cursor-default disabled:opacity-35'
 
-export function Pagination({ currentPage, onPageChange }: PaginationProps) {
+export function Pagination({ currentPage, onPageChange, totalPages }: PaginationProps) {
+  const lastPage = Math.min(totalPages, 500)
+  const startPage = Math.max(1, Math.min(currentPage - 2, lastPage - 4))
+  const pages = Array.from({ length: Math.min(5, lastPage) }, (_, index) => startPage + index)
+
   return (
     <nav className="mt-12 flex justify-center gap-2" aria-label="영화 목록 페이지">
       <button
@@ -40,7 +44,7 @@ export function Pagination({ currentPage, onPageChange }: PaginationProps) {
         className={buttonClassName}
         type="button"
         aria-label="다음 페이지"
-        disabled={currentPage === pages.length}
+        disabled={currentPage >= lastPage}
         onClick={() => onPageChange(currentPage + 1)}
       >
         <img className="size-4" src="/icons/chevron-right.svg" alt="" />

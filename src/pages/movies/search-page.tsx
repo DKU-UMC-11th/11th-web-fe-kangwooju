@@ -1,27 +1,66 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
-import type { FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { searchMovies } from '../../api/movies/search-movies'
+import type { TmdbMovieListItem } from '../../api/movies/models'
 import { BookmarkButton } from '../../components/movies/bookmark-button'
-import { movies } from '../../data/movies'
+import { Pagination } from '../../components/movies/pagination'
+import { toMovieCard } from '../../utils/movies/to-movie-card'
 import { cn } from '../../utils/cn'
 
 export function SearchPage() {
-  const { query } = useSearch({ from: '/search' })
+  const { query, page = 1 } = useSearch({ from: '/search' })
   const navigate = useNavigate({ from: '/search' })
 
-  const normalizedQuery = query?.trim().toLowerCase() ?? ''
-  const searchResults = normalizedQuery
-    ? movies.filter((movie) => (
-        movie.title.toLowerCase().includes(normalizedQuery)
-        || movie.originalTitle.toLowerCase().includes(normalizedQuery)
-      ))
-    : []
+  const normalizedQuery = query?.trim() ?? ''
+  const [movies, setMovies] = useState<TmdbMovieListItem[]>([])
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalResults, setTotalResults] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
+  const searchResults = movies.map(toMovieCard)
+
+  useEffect(() => {
+    let ignore = false
+
+    function loadSearchResults() {
+      setMovies([])
+      setErrorMessage(null)
+      setTotalResults(0)
+      setTotalPages(0)
+
+      if (!normalizedQuery) {
+        setIsLoading(false)
+        return
+      }
+
+      setIsLoading(true)
+      return searchMovies({ query: normalizedQuery, page })
+        .then((response) => {
+          if (!ignore) {
+            setMovies(response.results)
+            setTotalPages(response.total_pages)
+            setTotalResults(response.total_results)
+          }
+        })
+        .catch(() => {
+          if (!ignore) setErrorMessage('검색 결과를 불러오지 못했어요.')
+        })
+        .finally(() => {
+          if (!ignore) setIsLoading(false)
+        })
+    }
+
+    void loadSearchResults()
+    return () => { ignore = true }
+  }, [normalizedQuery, page, retryCount])
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const nextQuery = String(new FormData(event.currentTarget).get('query') ?? '').trim()
 
     navigate({
-      search: nextQuery ? { query: nextQuery } : {},
+      search: nextQuery ? { query: nextQuery, page: 1 } : {},
     })
   }
 
@@ -58,11 +97,16 @@ export function SearchPage() {
         </form>
 
         {normalizedQuery && (
-          <section className="mt-8" aria-live="polite">
+          <section className="mt-8" aria-live="polite" aria-busy={isLoading}>
             <h2 className="text-xl font-bold text-[#171a21]">‘{query?.trim()}’ 검색 결과</h2>
-            <p className="mt-2 text-sm text-[#737982]">영화 {searchResults.length}편</p>
+            {!isLoading && !errorMessage && <p className="mt-2 text-sm text-[#737982]">영화 {totalResults}편</p>}
 
-            {searchResults.length === 0 ? (
+            {isLoading ? <p className="mt-8">검색 결과를 불러오는 중이에요.</p> : errorMessage ? (
+              <div className="mt-8" role="alert">
+                <p>{errorMessage}</p>
+                <button className="mt-4 cursor-pointer rounded-lg bg-[#2878f0] px-4 py-2 text-white" type="button" onClick={() => setRetryCount((count) => count + 1)}>다시 시도</button>
+              </div>
+            ) : searchResults.length === 0 ? (
               <p className="mt-16 text-center text-[#737982]">검색 결과가 없어요.</p>
             ) : (
               <ul className="mt-6 grid list-none grid-cols-1 gap-x-12 gap-y-8 p-0 lg:grid-cols-2">
@@ -74,7 +118,11 @@ export function SearchPage() {
                         to="/movies/$movieId"
                         params={{ movieId: String(movie.id) }}
                       >
-                        <img className="aspect-2/3 h-full w-full object-cover" src={movie.posterPath} alt={`${movie.title} 포스터`} />
+                        {movie.posterPath ? (
+                          <img className="aspect-2/3 h-full w-full object-cover" src={movie.posterPath} alt={`${movie.title} 포스터`} />
+                        ) : (
+                          <span className="grid aspect-2/3 place-items-center bg-[#dde1e8] text-sm text-[#737982]">이미지 없음</span>
+                        )}
                       </Link>
                       <BookmarkButton
                         movieId={movie.id}
@@ -102,6 +150,13 @@ export function SearchPage() {
                   </li>
                 ))}
               </ul>
+            )}
+            {!isLoading && !errorMessage && totalPages > 0 && (
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={(nextPage) => { void navigate({ search: { query, page: nextPage } }) }}
+              />
             )}
           </section>
         )}

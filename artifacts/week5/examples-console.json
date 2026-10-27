@@ -1,0 +1,74 @@
+[
+  {
+    "level": "log",
+    "message": "1. 요청을 시작했어요.",
+    "timestamp": "2026-10-27T08:32:34.896Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-status.ts"
+  },
+  {
+    "level": "log",
+    "message": ".then(): 인셉션",
+    "timestamp": "2026-10-27T08:32:34.898Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-syntax.ts"
+  },
+  {
+    "level": "log",
+    "message": "async/await: 인셉션",
+    "timestamp": "2026-10-27T08:32:34.898Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-syntax.ts"
+  },
+  {
+    "level": "log",
+    "message": "Array(1)",
+    "timestamp": "2026-10-27T08:32:35.053Z",
+    "url": "http://127.0.0.1:5174/src/examples/fetch-movies.ts"
+  },
+  {
+    "level": "log",
+    "message": "2. 영화 요청이 끝났어요.",
+    "timestamp": "2026-10-27T08:32:35.204Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-status.ts"
+  },
+  {
+    "level": "log",
+    "message": "3. 요청 처리를 마쳤어요.",
+    "timestamp": "2026-10-27T08:32:35.204Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-status.ts"
+  },
+  {
+    "level": "log",
+    "message": "1. 요청을 시작했어요.",
+    "timestamp": "2026-10-27T08:32:37.570Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-status.ts"
+  },
+  {
+    "level": "log",
+    "message": ".then(): 인셉션",
+    "timestamp": "2026-10-27T08:32:37.571Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-syntax.ts"
+  },
+  {
+    "level": "log",
+    "message": "async/await: 인셉션",
+    "timestamp": "2026-10-27T08:32:37.571Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-syntax.ts"
+  },
+  {
+    "level": "log",
+    "message": "Array(1)",
+    "timestamp": "2026-10-27T08:32:37.740Z",
+    "url": "http://127.0.0.1:5174/src/examples/fetch-movies.ts"
+  },
+  {
+    "level": "log",
+    "message": "2. 영화 요청이 끝났어요.",
+    "timestamp": "2026-10-27T08:32:37.872Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-status.ts"
+  },
+  {
+    "level": "log",
+    "message": "3. 요청 처리를 마쳤어요.",
+    "timestamp": "2026-10-27T08:32:37.872Z",
+    "url": "http://127.0.0.1:5174/src/examples/promise-status.ts"
+  }
+]
