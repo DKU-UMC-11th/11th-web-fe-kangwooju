@@ -47,7 +47,7 @@ export function Header() {
           >
             검색
           </Link>
-          <span className={cn(navClassName, 'text-[#737982] after:opacity-0')}>내 정보</span>
+          <Link className={cn(navClassName, pathname.startsWith('/my-info') ? 'text-[#171a21] after:opacity-100' : 'text-[#737982] after:opacity-0')} to="/my-info">내 정보</Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
@@ -58,9 +58,9 @@ export function Header() {
           >
             <img className="size-[18px]" src="/icons/search.svg" alt="" />
           </Link>
-          <button className="h-[38px] rounded-[7px] border-0 bg-[#2878f0] px-[18px] text-sm font-bold text-white" type="button">
+          <Link className="inline-flex h-[38px] items-center rounded-[7px] bg-[#2878f0] px-[18px] text-sm font-bold text-white no-underline" to="/login">
             로그인
-          </button>
+          </Link>
         </div>
       </div>
     </header>
